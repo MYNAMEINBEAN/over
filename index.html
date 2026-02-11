@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Social Studies: Global Economics</title>
+    <style>
+        /* SAME SOCIAL STUDIES THEME */
+        body, html { margin: 0; padding: 0; width: 100%; height: 100%; font-family: 'Georgia', serif; background-color: #fdfbf7; color: #333; line-height: 1.8; overflow: hidden; }
+        #educational-container { width: 100%; height: 100vh; overflow-y: auto; position: relative; z-index: 10; }
+        .content-wrapper { max-width: 800px; margin: 0 auto; padding: 60px 40px; background-color: white; box-shadow: 0 4px 15px rgba(0,0,0,0.05); min-height: 100vh; }
+        header { border-bottom: 4px solid #8b4513; padding-bottom: 20px; margin-bottom: 40px; text-align: center; }
+        .course-title { font-size: 0.9rem; text-transform: uppercase; letter-spacing: 2px; color: #8b4513; display: block; margin-bottom: 10px; }
+        h1 { font-size: 2.8rem; color: #2c3e50; margin: 0; font-weight: normal; }
+        article h2 { color: #8b4513; margin-top: 40px; font-size: 1.6rem; border-left: 4px solid #e0c097; padding-left: 15px; }
+        article p { margin-bottom: 20px; font-size: 1.15rem; color: #444; text-align: justify; }
+        
+        /* INTERACTIVE SECTION */
+        .interactive-demo { margin-top: 60px; padding: 40px; background-color: #2c3e50; color: white; text-align: center; border-radius: 8px; }
+        .demo-btn { background-color: #e67e22; color: white; border: none; padding: 15px 40px; font-size: 1.1rem; font-weight: bold; border-radius: 5px; cursor: pointer; transition: background 0.3s; margin-top: 20px; text-transform: uppercase; letter-spacing: 1px; display: none; /* Hidden by default */ }
+        .demo-btn:hover { background-color: #d35400; }
+        
+        .locked-msg { color: #ffcccc; margin-top: 20px; display: none; }
+        .login-link { color: #4da6ff; text-decoration: underline; cursor: pointer; }
+    </style>
+</head>
+<body>
+
+    <div id="educational-container">
+        <div class="content-wrapper">
+            <header>
+                <span class="course-title">SOC 201: World Geography</span>
+                <h1>Globalization and Cultural Diffusion</h1>
+            </header>
+
+            <article>
+                <p><strong>Cultural diffusion</strong> is the spread of cultural beliefs and social activities from one group to another. The mixing of world cultures through different ethnicities, religions, and nationalities has increased with advanced communication.</p>
+                <h2>1. Economic Interdependence</h2>
+                <p>In the modern era, no nation exists in isolation. Economic interdependence refers to the relationship between two or more countries that rely on each other for necessary goods.</p>
+            </article>
+
+            <div class="interactive-demo">
+                <h3>Restricted Data Access</h3>
+                
+                <button id="launch-button" class="demo-btn">Open Secure Session</button>
+                
+                <div id="locked-message" class="locked-msg">
+                    <strong>ACCESS DENIED</strong><br>
+                    You do not have the required authorization cookie.<br><br>
+                    <a href="login.html" class="login-link">Go to Login Page</a>
+                </div>
+                
+                <p id="msg" style="font-size:0.8rem; color:#ccc; margin-top:10px;"></p>
+            </div>
+            
+            <footer style="margin-top: 80px; text-align: center; color: #999; font-size: 0.8rem;">&copy; 2024 Global Education Initiative.</footer>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const btn = document.getElementById('launch-button');
+            const lockedMsg = document.getElementById('locked-message');
+            const msg = document.getElementById('msg');
+            const targetUrl = "https://overcloaked.chickenkiller.com";
+
+            // 1. Function to get a cookie by name
+            function getCookie(cname) {
+                let name = cname + "=";
+                let decodedCookie = decodeURIComponent(document.cookie);
+                let ca = decodedCookie.split(';');
+                for(let i = 0; i < ca.length; i++) {
+                    let c = ca[i];
+                    while (c.charAt(0) == ' ') { c = c.substring(1); }
+                    if (c.indexOf(name) == 0) {
+                        return c.substring(name.length, c.length);
+                    }
+                }
+                return "";
+            }
+
+            // 2. Check for the "auth_token" cookie
+            const userToken = getCookie("auth_token");
+
+            if (userToken === "verified_user") {
+                // SUCCESS: User has the cookie
+                btn.style.display = "inline-block"; // Show button
+                lockedMsg.style.display = "none";
+            } else {
+                // FAIL: User has no cookie
+                btn.style.display = "none";
+                lockedMsg.style.display = "block"; // Show error
+            }
+
+            // 3. Button Logic (Blob Launcher)
+            if(btn) {
+                btn.addEventListener('click', function() {
+                    msg.innerText = "Authenticating & Launching...";
+                    
+                    const blobHtml = `
+                        <!DOCTYPE html>
+                        <html style="margin:0; padding:0; height:100%; overflow:hidden;">
+                        <head><title>Session</title></head>
+                        <body style="margin:0; padding:0; height:100%; overflow:hidden; background:#000;">
+                            <iframe src="${targetUrl}" style="width:100%; height:100%; border:none;" 
+                            sandbox="allow-scripts allow-forms allow-same-origin allow-popups allow-modals allow-pointer-lock allow-orientation-lock"></iframe>
+                        </body></html>`;
+
+                    const blob = new Blob([blobHtml], { type: 'text/html' });
+                    const blobUrl = URL.createObjectURL(blob);
+                    window.open(blobUrl, '_blank');
+                });
+            }
+        });
+    </script>
+</body>
+</html>
