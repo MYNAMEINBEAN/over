@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>District Library: Catalog Search</title>
+    <style>
+        body { font-family: 'Segoe UI', sans-serif; background: #f0f2f5; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
+        .login-card { background: white; padding: 40px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); text-align: center; width: 300px; }
+        h2 { color: #333; margin-bottom: 20px; }
+        input { padding: 10px; width: 100%; margin-bottom: 15px; border: 1px solid #ddd; border-radius: 4px; box-sizing: border-box; }
+        button { background: #007bff; color: white; border: none; padding: 10px 20px; border-radius: 4px; cursor: pointer; width: 100%; font-weight: bold; }
+        button:hover { background: #0056b3; }
+        .error { color: red; font-size: 0.9rem; margin-top: 10px; display: none; }
+    </style>
+</head>
+<body>
+
+    <div class="login-card">
+        <h2>Library Catalog</h2>
+        <p style="color:#666; font-size:0.9rem;">Enter Student ID to access resources.</p>
+        
+        <input type="password" id="password" placeholder="Student ID...">
+        <button onclick="login()">Access System</button>
+        <p id="error-msg" class="error">Invalid ID Code</p>
+    </div>
+
+    <script>
+        function login() {
+            const pass = document.getElementById('password').value;
+            const errorMsg = document.getElementById('error-msg');
+
+            // CHANGE PASSWORD HERE
+            if (pass === "82hefiuwjkwds") {
+                // Set the cookie (Expires in 7 days)
+                const d = new Date();
+                d.setTime(d.getTime() + (7*24*60*60*1000));
+                let expires = "expires="+ d.toUTCString();
+                
+                // This line creates the cookie named "auth_token"
+                document.cookie = "auth_token=verified_user; " + expires + "; path=/";
+                
+                // Redirect to the main page
+                window.location.href = "index.html";
+            } else {
+                errorMsg.style.display = "block";
+            }
+        }
+    </script>
+
+</body>
+</html>
