@@ -3,106 +3,100 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Secure App Portal</title>
+    <title>District Library: Catalog Search</title>
     <style>
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #0f0f0f; color: #e0e0e0; text-align: center; margin: 0; padding: 20px; }
-        .hidden { display: none !important; }
-        .card { background: #1a1a1a; padding: 30px; border-radius: 12px; box-shadow: 0 8px 32px rgba(0,0,0,0.5); display: inline-block; margin-top: 50px; }
-        input { padding: 12px; border-radius: 5px; border: 1px solid #333; background: #252525; color: white; margin-bottom: 10px; }
-        button { padding: 12px 24px; border: none; border-radius: 5px; background: #6200ee; color: white; cursor: pointer; font-weight: bold; transition: 0.3s; }
-        button:hover { background: #3700b3; }
-        .nav { margin-bottom: 20px; }
-        iframe { width: 95%; height: 85vh; border: 2px solid #333; border-radius: 8px; margin-top: 15px; background: white; }
+        body { font-family: 'Segoe UI', sans-serif; background: #f0f2f5; display: flex; flex-direction: column; justify-content: center; align-items: center; min-height: 100vh; margin: 0; }
+        .login-card { background: white; padding: 40px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); text-align: center; width: 300px; }
+        .app-container { display: none; width: 95%; text-align: center; }
+        h2 { color: #333; margin-bottom: 20px; }
+        input { padding: 10px; width: 100%; margin-bottom: 15px; border: 1px solid #ddd; border-radius: 4px; box-sizing: border-box; }
+        button { background: #007bff; color: white; border: none; padding: 10px 20px; border-radius: 4px; cursor: pointer; font-weight: bold; transition: 0.2s; }
+        button:hover { background: #0056b3; }
+        .nav-btn { margin: 10px; background: #28a745; }
+        .logout-btn { background: #dc3545; font-size: 0.8rem; margin-top: 20px; }
+        .error { color: red; font-size: 0.9rem; margin-top: 10px; display: none; }
+        #frame-wrapper { width: 100%; height: 80vh; margin-top: 20px; background: #fff; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+        iframe { width: 100%; height: 100%; border: none; }
     </style>
 </head>
 <body>
 
-    <div id="auth-section" class="card">
-        <h2>Authentication Required</h2>
-        <input type="password" id="pass-input" placeholder="Enter Access Code">
-        <br>
-        <button onclick="handleLogin()">Unlock Access</button>
+    <div id="login-interface" class="login-card">
+        <h2>Library Catalog</h2>
+        <p style="color:#666; font-size:0.9rem;">Enter Student ID to access resources.</p>
+        <input type="password" id="password" placeholder="Student ID...">
+        <button onclick="login()">Access System</button>
+        <p id="error-msg" class="error">Invalid ID Code</p>
     </div>
 
-    <div id="app-section" class="hidden">
-        <div class="nav">
-            <button onclick="loadBlob('https://astra.pxi-fusion.com/embed/truffled/brawl-stars?web-socket-enabled=false')">Brawl Stars</button>
-            <button onclick="loadBlob('https://deli-game.github.io/geometry-dash-lite/')">Geometry Dash</button>
-            <button style="background: #cf6679;" onclick="logout()">Logout</button>
+    <div id="main-content" class="app-container">
+        <h2>Resource Selection</h2>
+        <div>
+            <button class="nav-btn" onclick="loadInBlob('https://astra.pxi-fusion.com/embed/truffled/brawl-stars?web-socket-enabled=false')">Brawl Stars</button>
+            <button class="nav-btn" onclick="loadInBlob('https://deli-game.github.io/geometry-dash-lite/')">Geometry Dash</button>
         </div>
-        <div id="display-area"></div>
+        
+        <div id="frame-wrapper">
+            <p style="color: #666; padding-top: 100px;">Select a resource to begin.</p>
+        </div>
+
+        <button class="logout-btn" onclick="logout()">Clear Session</button>
     </div>
 
     <script>
-        // --- COOKIE HELPERS ---
-        function setCookie(name, value, days) {
-            let expires = "";
-            if (days) {
-                let date = new Date();
-                date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
-                expires = "; expires=" + date.toUTCString();
+        // 1. Check for existing cookie on load
+        window.onload = function() {
+            if (document.cookie.includes("auth_token=verified_user")) {
+                showContent();
             }
-            document.cookie = name + "=" + (value || "") + expires + "; path=/; SameSite=Strict";
-        }
+        };
 
-        function getCookie(name) {
-            let nameEQ = name + "=";
-            let ca = document.cookie.split(';');
-            for(let i=0; i < ca.length; i++) {
-                let c = ca[i];
-                while (c.charAt(0)==' ') c = c.substring(1,c.length);
-                if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length,c.length);
-            }
-            return null;
-        }
+        function login() {
+            const pass = document.getElementById('password').value;
+            const errorMsg = document.getElementById('error-msg');
 
-        // --- AUTH LOGIC ---
-        function checkStatus() {
-            if (getCookie("access_granted") === "true") {
-                document.getElementById('auth-section').classList.add('hidden');
-                document.getElementById('app-section').classList.remove('hidden');
-            }
-        }
-
-        function handleLogin() {
-            const input = document.getElementById('pass-input').value;
-            // You can change "your-secret-password" to whatever you like
-            if (input === "your-secret-password") {
-                setCookie("access_granted", "true", 1); // Valid for 1 day
-                checkStatus();
+            // Using your specific password
+            if (pass === "82hefiuwasdsdsdjkwds") {
+                const d = new Date();
+                // Setting a very long expiration as per your code
+                d.setTime(d.getTime() + (30 * 24 * 60 * 60 * 1000)); 
+                let expires = "expires="+ d.toUTCString();
+                
+                document.cookie = "auth_token=verified_user; " + expires + "; path=/; SameSite=Strict";
+                showContent();
             } else {
-                alert("Invalid Key");
+                errorMsg.style.display = "block";
             }
+        }
+
+        function showContent() {
+            document.getElementById('login-interface').style.display = 'none';
+            document.getElementById('main-content').style.display = 'block';
         }
 
         function logout() {
-            setCookie("access_granted", "", -1); // Expire the cookie
+            document.cookie = "auth_token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
             location.reload();
         }
 
-        // --- BLOB IFRAME LOGIC ---
-        function loadBlob(targetUrl) {
-            const display = document.getElementById('display-area');
-            display.innerHTML = ''; // Clear current
-
-            const htmlContent = `
+        // 2. The Blob iFrame Logic
+        function loadInBlob(url) {
+            const wrapper = document.getElementById('frame-wrapper');
+            
+            const html = `
+                <!DOCTYPE html>
                 <html>
                 <body style="margin:0;padding:0;overflow:hidden;">
-                    <iframe src="${targetUrl}" style="width:100vw;height:100vh;border:none;"></iframe>
+                    <iframe src="${url}"></iframe>
                 </body>
                 </html>
             `;
 
-            const blob = new Blob([htmlContent], { type: 'text/html' });
+            const blob = new Blob([html], { type: 'text/html' });
             const blobUrl = URL.createObjectURL(blob);
-
-            const frame = document.createElement('iframe');
-            frame.src = blobUrl;
-            display.appendChild(frame);
+            
+            wrapper.innerHTML = `<iframe src="${blobUrl}"></iframe>`;
         }
-
-        // Run check on load
-        window.onload = checkStatus;
     </script>
 </body>
 </html>
