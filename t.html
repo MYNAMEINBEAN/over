@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Secure Game Portal</title>
+    <style>
+        body { font-family: sans-serif; background: #121212; color: white; text-align: center; padding: 50px; }
+        .hidden { display: none; }
+        .btn-container { margin-top: 20px; }
+        button { padding: 15px 25px; margin: 10px; cursor: pointer; border: none; border-radius: 5px; background: #3498db; color: white; font-weight: bold; }
+        button:hover { background: #2980b9; }
+        iframe { width: 90%; height: 80vh; border: none; margin-top: 20px; border-radius: 10px; }
+    </style>
+</head>
+<body>
+
+    <div id="auth-box">
+        <h2>Enter Access Key</h2>
+        <input type="password" id="password" placeholder="Password...">
+        <button onclick="checkAuth()">Login</button>
+    </div>
+
+    <div id="content" class="hidden">
+        <h1>Select an Application</h1>
+        <div class="btn-container">
+            <button onclick="loadApp('https://astra.pxi-fusion.com/embed/truffled/brawl-stars?web-socket-enabled=false')">Load Brawl Stars</button>
+            <button onclick="loadApp('https://deli-game.github.io/geometry-dash-lite/')">Load Geometry Dash</button>
+        </div>
+        <div id="frame-container"></div>
+    </div>
+
+    <script>
+        // 1. Simple Auth Logic
+        function checkAuth() {
+            const pass = document.getElementById('password').value;
+            // Replace 'secure123' with your desired password
+            if (pass === 'secure123') {
+                document.getElementById('auth-box').classList.add('hidden');
+                document.getElementById('content').classList.remove('hidden');
+            } else {
+                alert('Access Denied');
+            }
+        }
+
+        // 2. The Blob Magic
+        function loadApp(url) {
+            const container = document.getElementById('frame-container');
+            container.innerHTML = ''; // Clear previous app
+
+            // Create a small HTML wrapper for the blob
+            const html = `
+                <html>
+                    <body style="margin:0;padding:0;overflow:hidden">
+                        <iframe src="${url}" style="width:100%;height:100%;border:none;"></iframe>
+                    </body>
+                </html>
+            `;
+
+            const blob = new Blob([html], { type: 'text/html' });
+            const blobUrl = URL.createObjectURL(blob);
+
+            const frame = document.createElement('iframe');
+            frame.src = blobUrl;
+            container.appendChild(frame);
+        }
+    </script>
+</body>
+</html>
